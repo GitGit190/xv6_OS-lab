@@ -502,28 +502,3 @@ pgpte(pagetable_t pagetable, uint64 va) {
   return walk(pagetable, va, 0);
 }
 #endif
-
-void vmprintRecursive(pagetable_t pagetable, int level) {  
-  for(int i = 0 ; i < 512 ; i++){    
-    pte_t pte = pagetable[i];    
-    if(pte & PTE_V) {      
-      uint64 child = PTE2PA (pte);      
-
-      for(int j = 0 ; j <= level; j++) {        
-        if(j != level) 
-          printf(".. ");
-        else      
-          printf("..") ;        
-      }      
-      
-      printf("%d: pte %p pa %p\n", i, (void*)pte, (void*)child);      
-      if((pte & (PTE_R | PTE_W | PTE_X)) == 0)          
-      vmprintRecursive((pagetable_t)child, level + 1);    
-    }   
-  }
-}
-  
-void vmprint(pagetable_t pagetable) {  
-  printf("page table %p\n", pagetable);  
-  vmprintRecursive(pagetable, 0);
-}
